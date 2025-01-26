@@ -8,6 +8,7 @@
           :landscape="landscape"
           @save="saveRecipe"
           @delete="deleteRecipe"
+          @close="closeEdit"
         />
         <LazyRecipeJsonEditor v-if="isEditJSON" v-model="recipe" class="mt-10" :options="EDITOR_OPTIONS" />
         <v-card-text v-else>
@@ -267,13 +268,14 @@ export default defineComponent({
     });
 
     /** =============================================================
-     * Recipe Save Delete
+     * Recipe Save Delete Close
      */
 
     async function saveRecipe() {
       const { data } = await api.recipes.updateOne(props.recipe.slug, props.recipe);
       setMode(PageMode.VIEW);
       if (data?.slug) {
+        Object.assign(originalRecipe.value, props.recipe)
         router.push(`/g/${groupSlug.value}/r/` + data.slug);
       }
     }
@@ -283,6 +285,11 @@ export default defineComponent({
       if (data?.slug) {
         router.push(`/g/${groupSlug.value}`);
       }
+    }
+
+    async function closeEdit() {
+      Object.assign(props.recipe, originalRecipe.value)
+      setMode(PageMode.VIEW);
     }
 
     /** =============================================================
@@ -359,6 +366,7 @@ export default defineComponent({
       toggleCookMode,
       saveRecipe,
       deleteRecipe,
+      closeEdit,
       addStep,
       hasLinkedIngredients,
       notLinkedIngredients,

@@ -12,7 +12,7 @@
       :open="isEditMode"
       :recipe-id="recipe.id"
       class="ml-auto mt-n2 pb-4"
-      @close="setMode(PageMode.VIEW)"
+      @close="$emit('close')"
       @json="toggleEditMode()"
       @edit="setMode(PageMode.EDIT)"
       @save="$emit('save')"
